@@ -15,7 +15,7 @@
   | Author:                                                              |
   +----------------------------------------------------------------------+
 
-  $Id: php_mms.h,v 1.2 2004-05-24 14:05:32 oops Exp $
+  $Id: php_mms.h,v 1.3 2004-05-27 19:21:40 oops Exp $
 */
 
 #ifndef PHP_MMS_H
@@ -43,6 +43,7 @@ PHP_MINFO_FUNCTION(mms);
 PHP_FUNCTION(mmsversion);
 PHP_FUNCTION(mmscheck);
 PHP_FUNCTION(mmschecks);
+PHP_FUNCTION(mmserror);
 
 /* 
   	Declare any global variables you may need between the BEGIN
@@ -70,14 +71,36 @@ ZEND_END_MODULE_GLOBALS(mms)
 #define MMS_G(v) (mms_globals.v)
 #endif
 
-#define MMS_BUILDNO "200405222307"
-#define MMS_BUILDVER "0.0.4"
+#define MMS_BUILDNO "200405290404"
+#define MMS_BUILDVER "0.0.5"
 
 #define phpext_mms_ptr mms_module_ptr
 
+#define NOMAL 0
 #define HOST_NOT_FOUND 1
-#define INVALID_URL 100
+#define SOCKET_CREATE_FAIL 2
+#define CONNECT_FAIL 3
 #define MALLOC_ERROR 4
+#define ICONV_ERROR 5
+#define NONBLOCK_ERROR 6
+#define BIND_ERROR 7
+#define WRITE_ERROR 8
+
+#define INVALID_URL 100
+#define CLOSE_PORT 101
+
+#define C_ETIMEDOUT 102
+#define C_ECONNREFUSED 103
+#define C_ECONNABORTED 104
+#define C_ECONNRESET 105
+#define C_ENETRESET 106
+
+#define FILE_NOT_FOUND 401
+#define CORRUPTED_MEDIA 402
+#define FILE_WRONG 403
+#define NOT_MEDIA 404
+#define OTHER_ERROR 405
+
 int o_mmscheck (char *request, int timeout, int verbose);
 
 #endif	/* PHP_MMS_H */
