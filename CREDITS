@@ -1,0 +1,11 @@
+This module based on mms_client 0.0.3
+
+* JoungKyun Kim <admin @AT@ oops.org>
+- create mms php modules
+- added connect timeout patch
+- support WMS9 with 1755 port
+
+* CHOI Jun Ho <cjh @AT@ kr.freebsd.org>
+- added header check
+- added euc-kr patch
+
