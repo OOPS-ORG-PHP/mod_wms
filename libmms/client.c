@@ -121,7 +121,7 @@ static int send_command (int s, int command, uint32_t switches,
 
   if (write (s, cmd.buf, length+48) != (length+48)) {
     if ( verbose )
-      php_printf ("write error. maybe closed prot 1755.\n");
+      php_printf ("==> ERROR: write error. maybe closed prot 1755.\n");
 
     return -1;
   }
@@ -278,7 +278,7 @@ static int get_answer (int s) {
 
     len = read (s, data, BUF_SIZE) ;
     if (!len) {
-      if (verbose) php_printf ("\nalert! eof\n");
+      if (verbose) php_printf ("\n==> ERROR: alert! eof\n");
       return OTHER_ERROR;
     }
 
@@ -290,7 +290,7 @@ static int get_answer (int s) {
 
     if (command == 0x1b) {
       if ( send_command (s, 0x1b, 0, 0, 0, data) == -1 ) {
-        return CLOSE_PORT;
+        return WRITE_ERROR;
       }
     }
   }
@@ -391,6 +391,9 @@ int o_mmscheck (char *url, int timeout, int verbose) {
   int                  opt, optlength = 0, result = 0;
   struct timeval       timeouts;
   fd_set               c_fds;
+  fd_set               r_fds;
+  int                  sval;
+  socklen_t            slen;
 
   /* parse url */
   strncpy (host, &url[6], 255);
@@ -435,7 +438,7 @@ int o_mmscheck (char *url, int timeout, int verbose) {
   /* open socket */
 
   if ((s = socket(hp->h_addrtype, SOCK_STREAM, 0))<0) {
-    if ( verbose ) php_printf ("can't create socket\n");
+    if ( verbose ) php_printf ("==> ERROR: can't create socket\n");
     return  SOCKET_CREATE_FAIL;
   }
 
@@ -462,18 +465,51 @@ int o_mmscheck (char *url, int timeout, int verbose) {
 
   if ( connect (s, (struct sockaddr *)&sa, sizeof sa) < 0 && errno == EINPROGRESS) {
     /* connected nonblockingly. wait until timeout */
-    FD_ZERO (&c_fds);
-    FD_SET (s, &c_fds);
 
     timeouts.tv_sec = timeout;
     timeouts.tv_usec = 0;
 
+    FD_ZERO (&c_fds);
+    FD_ZERO (&r_fds);
+    FD_SET (s, &c_fds);
+    FD_SET (s, &r_fds);
+
     /* wait untim something happens */
-    if ( (result = select ( s + 1, NULL, &c_fds, NULL, &timeouts )) < 1 ) {
+    if ( (result = select ( s + 1, &r_fds, &c_fds, NULL, &timeouts )) < 1 ) {
       /* failed connect () */
-      if ( verbose ) php_printf ("connect failed code %d\n", result);
+      if ( verbose ) php_printf ("==> ERROR: connect failed code %d\n", result);
       close (s);
       return CONNECT_FAIL;
+    }
+
+    if ( FD_ISSET (s, &r_fds) || FD_ISSET (s, &c_fds) ) {
+      if ( FD_ISSET (s, &r_fds) && FD_ISSET (s, &c_fds) ) {
+        slen = sizeof (sval);
+
+	if ( getsockopt (s, SOL_SOCKET, SO_ERROR, &sval, &slen) < 0 ) {
+	  if ( verbose ) php_printf ("==> ERROR: %s\n", strerror (ETIMEDOUT));
+	  close (s);
+	  return C_ETIMEDOUT;
+	}
+
+	if ( sval != 0 ) {
+          if ( verbose ) php_printf ("==> ERROR: %s\n", strerror (sval));
+	  close (s);
+
+	  switch ( sval ) {
+            case ECONNREFUSED :
+              return C_ECONNREFUSED;
+	    case ECONNABORTED :
+	      return C_ECONNABORTED;
+	    case ECONNRESET :
+	      return C_ECONNRESET;
+	    case ENETRESET :
+	      return C_ENETRESET;
+	    default :
+	      return CONNECT_FAIL;
+	  }
+	}
+      }
     }
   }
 
@@ -492,7 +528,7 @@ int o_mmscheck (char *url, int timeout, int verbose) {
 
   if ( send_command (s, 1, 0, 0x0004000b, strlen(str) * 2+8, data) == -1 ) {
     close (s);
-    return CLOSE_PORT;
+    return WRITE_ERROR;
   }
 
   len = read (s, data, BUF_SIZE) ;
@@ -510,7 +546,7 @@ int o_mmscheck (char *url, int timeout, int verbose) {
   memset (data, 0, 8);
   if ( send_command (s, 2, 0, 0, 28*2+8, data) == -1 ) {
     close (s);
-    return CLOSE_PORT;
+    return WRITE_ERROR;
   }
 
   len = read (s, data, BUF_SIZE) ;
@@ -531,7 +567,7 @@ int o_mmscheck (char *url, int timeout, int verbose) {
   memset (data, 0, 8);
   if ( send_command (s, 5, 0, 0, strlen(path)*2+12, data) == -1 ) {
     close (s);
-    return CLOSE_PORT;
+    return WRITE_ERROR;
   }
 
   result = get_answer (s);
