@@ -15,7 +15,7 @@
   | Author: JoungKyun Kim <http://www.oops.org>                          |
   +----------------------------------------------------------------------+
 
-  $Id: mms.c,v 1.1.1.1 2004-05-19 18:49:08 oops Exp $
+  $Id: mms.c,v 1.2 2004-05-27 19:21:40 oops Exp $
 */
 
 /*
@@ -47,6 +47,7 @@ static int le_mms;
 function_entry mms_functions[] = {
 	PHP_FE(mmscheck,			NULL)
 	PHP_FE(mmschecks,			NULL)
+	PHP_FE(mmserror,			NULL)
 	PHP_FE(mmsversion,			NULL)
 	{NULL, NULL, NULL}
 };
@@ -98,7 +99,7 @@ PHP_FUNCTION(mmschecks)
 	char *request = NULL;
 	int argc = ZEND_NUM_ARGS();
 	int hostlen, urilen, optlen;
-	int i, result;
+	int result;
 	int timeout = 10, debug = 0;
 	char *usep;
 	char *osep;
@@ -197,16 +198,15 @@ PHP_FUNCTION(mmschecks)
 }
 /* }}} */
 
-/* {{{ proto int mmscheck (string addr [, string uri [, string opt [, int timeout [, int debug] ] ] ])
+/* {{{ proto int mmscheck (string url [, int timeout [, int debug] ] ] ])
  *  print mms extension build number */
 PHP_FUNCTION(mmscheck)
 {
 	zval ** G_addr, ** G_timeout, **G_debug;
 	char *host;
-	char *request = NULL;
 	int argc = ZEND_NUM_ARGS();
 	int hostlen;
-	int i, result;
+	int result;
 	int timeout = 10, debug = 0;
 
 	host = NULL;
@@ -254,6 +254,118 @@ PHP_FUNCTION(mmscheck)
 	result = o_mmscheck (host, timeout, debug);
 
 	RETURN_LONG (result);
+}
+/* }}} */
+
+/* {{{ proto int mmserror (int returnCode [, string address ] ])
+ *  print mms return code message */
+PHP_FUNCTION(mmserror)
+{
+	zval ** G_code, ** G_host;
+	char *host, *msg;
+	int argc = ZEND_NUM_ARGS();
+	int hostlen;
+	int i, result;
+	int code = 0;
+
+	host = NULL;
+	hostlen = 0;
+
+	msg = emalloc (sizeof (char) * 1024);
+	memset ( msg, 0, 1024 );
+
+	switch (argc) {
+		case 2 :
+			if (zend_get_parameters_ex (argc, &G_code, &G_host) == FAILURE)
+				WRONG_PARAM_COUNT;
+
+			convert_to_string_ex(G_host);
+			host = Z_STRVAL_PP (G_host);
+			hostlen = Z_STRLEN_PP (G_host);
+			break;
+		case 1 :
+			if (zend_get_parameters_ex (argc, &G_code) == FAILURE)
+				WRONG_PARAM_COUNT;
+
+			break;
+		default:
+			WRONG_PARAM_COUNT;
+	}
+
+	convert_to_long_ex(G_code);
+	code = Z_LVAL_PP (G_code);
+
+	if ( hostlen == 0 )
+		host = "host";
+
+	switch ( code ) {
+		case NOMAL :
+			sprintf (msg, "OK");
+			break;
+		case HOST_NOT_FOUND :
+			sprintf (msg, "%s not found", host);
+			break;
+		case SOCKET_CREATE_FAIL :
+			sprintf (msg, "socket create failed");
+			break;
+		case CONNECT_FAIL :
+			sprintf (msg, "connect failed");
+			break;
+		case MALLOC_ERROR :
+			sprintf (msg, "memory allocation error");
+			break;
+		case ICONV_ERROR:
+			sprintf (msg, "failed iconv convert");
+			break;
+		case NONBLOCK_ERROR:
+			sprintf (msg, "failed transport non blocking mode");
+			break;
+		case BIND_ERROR:
+			sprintf (msg, "failed to bind local port");
+			break;
+		case WRITE_ERROR:
+			sprintf (msg, "failed to write on socket");
+			break;
+		case INVALID_URL:
+			sprintf (msg, "%s is invalid address", host);
+			break;
+		case CLOSE_PORT:
+			sprintf (msg, "Maybe closed 1755 port on %s", host);
+			break;
+		case C_ETIMEDOUT:
+			sprintf (msg, "connect timeout on %s", host);
+			break;
+		case C_ECONNREFUSED:
+			sprintf (msg, "connection refused on %s", host);
+			break;
+		case C_ECONNABORTED:
+			sprintf (msg, "Connection aborted on %s", host);
+			break;
+		case C_ECONNRESET:
+			sprintf (msg, "Connection reset on %s", host);
+			break;
+		case C_ENETRESET:
+			sprintf (msg, "Connection aborted by network on %s", host);
+			break;
+		case FILE_NOT_FOUND :
+			sprintf (msg, "file not found");
+			break;
+		case CORRUPTED_MEDIA :
+			sprintf (msg, "media corrucpted");
+			break;
+		case FILE_WRONG :
+			sprintf (msg, "file wrong");
+			break;
+		case NOT_MEDIA :
+			sprintf (msg, "is not media file");
+			break;
+		default :
+			sprintf (msg, "Other error");
+			break;
+	}
+
+	RETVAL_STRING (msg, 1);
+	efree (msg);
 }
 /* }}} */
 
