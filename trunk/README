@@ -1,0 +1,8 @@
+mod_mms extension
+
+mod_mms WMS7 과 WMS9 서버의 파일들을 체크하는 PHP Extension 이다.
+mod_mms 를 이용하여 스트리밍 서버에 존재하는 파일들의 헤더를 체크
+하여 정상적 스트리밍 여부를 확인할 수 있다.
+
+mod_mms 는 mms_client 의 소스를 개작하여 제작 되었다.
+
