@@ -1,6 +1,6 @@
 /* 
  * RTSP header check
- * $Id: rtsp.c,v 1.1 2004-06-15 09:21:11 oops Exp $
+ * $Id: rtsp.c,v 1.2 2004-06-15 12:07:41 oops Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -104,7 +104,7 @@ int rtsp_responce ( char * data ) {
 int o_rtspcheck (char *url, int timeout, int debug) {
 	int      s;
 	char     str[1024] = { 0, };
-	char     data[1024] = { 0, };
+	char     data[2048] = { 0, };
 	int      len;
 	char     host[256] = { 0, };
 	char    *path, *file, *cp;
