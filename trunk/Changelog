@@ -1,0 +1,13 @@
+PHP MMS Extexsions Changelog
+
+* 0.0.3
+--------------------------------------------------------------------------------
+Tue May 18 2004
+  by JoungKyun Kim <http://www.oops.org>
+    - create mms extension base on mms_client 0.0.3
+
+Wed May 19 2004
+  by JoungKyun Kim <http://www.oops.org>
+    - added timeout patch
+    - enable to use libiconv
+
