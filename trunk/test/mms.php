@@ -26,10 +26,16 @@ define (MALLOC_ERROR, 4);
 define (ICONV_ERROR, 5);
 define (NONBLOCK_ERROR, 6);
 define (BIND_ERROR, 7);
+define (WRITE_ERROR, 8);
 define (INVALID_URL, 100);
 define (CLOSE_PORT, 101);
+define (C_ETIMEDOUT, 102);
+define (C_ECONNREFUSED, 103);
+define (C_ECONNABORTED, 104);
+define (C_ECONNRESET, 105);
+define (C_ENETRESET, 106);
 define (FILE_NOT_FOUND, 401);
-define (CORRUCPTED_MEDIA, 402);
+define (CORRUPTED_MEDIA, 402);
 define (FILE_WRONG, 403);
 define (NOT_MEDIA, 404);
 define (OTHER_ERROR, 405);
@@ -37,8 +43,10 @@ define (OTHER_ERROR, 405);
 $addr[] = "192.168.0.1";
 $addr[] = "192.168.0.2";
 $addr[] = "192.168.0.3";
-$debug = 0;
-$timeout = 2;
+
+$debug = $_GET['debug'] ? $_GET['debug'] : 0;
+$timeout = $_GET['timeout'] ? $_GET['timeout'] : 2;
+$sleep = $_GET['sleep'] ? $_GET['sleep'] : 0;
 
 $uri[] = "WMLoad.asf";
 $uri[] = "WMLoad1.asf";
@@ -83,11 +91,29 @@ for ($j=0; $j<count($addr); $j++) {
       case BIND_ERROR:
         echo "failed to bind local port";
         break;
+      case WRITE_ERROR:
+        echo "failed to write on socket";
+        break;
       case INVALID_URL:
         echo "{$addr[$j]} is invalid address";
         break;
       case CLOSE_PORT:
         echo "Maybe closed 1755 port on {$addr[$j]}";
+        break;
+      case C_ETIMEDOUT:
+        echo "connect timeout on {$addr[$j]}";
+        break;
+      case C_ECONNREFUSED:
+        echo "connection refused on {$addr[$j]}";
+        break;
+      case C_ECONNABORTED:
+        echo "Connection aborted on {$addr[$j]}";
+        break;
+      case C_ECONNRESET:
+        echo "Connection reset on {$addr[$j]}";
+        break;
+      case C_ENETRESET:
+        echo "Connection aborted by network on {$addr[$j]}";
         break;
       case FILE_NOT_FOUND :
         echo "file not found";
@@ -106,7 +132,7 @@ for ($j=0; $j<count($addr); $j++) {
         break;
     }
 
-    sleep(1);
+    if ( $sleep ) sleep($sleep);
   }
 }
 echo "\n";
@@ -132,7 +158,7 @@ for ($j=0; $j<count($addr); $j++) {
         echo "OK";
         break;
       case HOST_NOT_FOUND :
-        echo "{$url} not found";
+        echo "{$addr[$j]} not found";
         break;
       case SOCKET_CREATE_FAIL :
         echo "socket create failed";
@@ -152,11 +178,29 @@ for ($j=0; $j<count($addr); $j++) {
       case BIND_ERROR:
         echo "failed to bind local port";
         break;
+      case WRITE_ERROR:
+        echo "failed to write on socket";
+        break;
       case INVALID_URL:
-        echo "{$url} is invalid address";
+        echo "{$addr[$j]} is invalid address";
         break;
       case CLOSE_PORT:
         echo "Maybe closed 1755 port on {$addr[$j]}";
+        break;
+      case C_ETIMEDOUT:
+        echo "connect timeout on {$addr[$j]}";
+        break;
+      case C_ECONNREFUSED:
+        echo "connection refused on {$addr[$j]}";
+        break;
+      case C_ECONNABORTED:
+        echo "Connection aborted on {$addr[$j]}";
+        break;
+      case C_ECONNRESET:
+        echo "Connection reset on {$addr[$j]}";
+        break;
+      case C_ENETRESET:
+        echo "Connection aborted by network on {$addr[$j]}";
         break;
       case FILE_NOT_FOUND :
         echo "file not found";
@@ -175,7 +219,7 @@ for ($j=0; $j<count($addr); $j++) {
         break;
     }
 
-    sleep(1);
+    if ( $sleep ) sleep($sleep);
   }
 }
 echo "\n";

@@ -86,9 +86,16 @@ inline static unsigned long long int ByteSwap64(unsigned long long int x)
 #define ICONV_ERROR 5
 #define NONBLOCK_ERROR 6
 #define BIND_ERROR 7
+#define WRITE_ERROR 8
 
 #define INVALID_URL 100
 #define CLOSE_PORT 101
+
+#define C_ETIMEDOUT 102
+#define C_ECONNREFUSED 103
+#define C_ECONNABORTED 104
+#define C_ECONNRESET 105
+#define C_ENETRESET 106
 
 #define FILE_NOT_FOUND 401
 #define CORRUPTED_MEDIA 402
