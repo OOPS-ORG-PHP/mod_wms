@@ -1,6 +1,6 @@
 /* 
  * RTSP header check
- * $Id: rtsp.c,v 1.2 2004-06-15 12:07:41 oops Exp $
+ * $Id: rtsp.c,v 1.3 2004-07-16 20:32:47 oops Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -50,7 +50,7 @@ int send_command (int s, char *host, char *uri) {
 	sprintf (query, "DESCRIBE rtsp://%s/%s RTSP/1.0\r\n"
 					"User-Agent: WMPlayer/9.0.0.2980 guid/3300AD50-2C39-46C0-AE0A-F3ED6E6D7421\r\n"
 					"Accept: application/sdp\r\n"
-					"Accept-Cahrset: UTF-8, *;q=0.1\r\n"
+					"Accept-Charset: UTF-8, *;q=0.1\r\n"
 					"X-Accept-Authentication: Negotiate, NTLM, Digest, Basic\r\n"
 					"Accept-Language: ko-KR, *;q=0.1\r\n"
 					"CSep: 1\r\n"

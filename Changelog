@@ -1,5 +1,11 @@
 PHP WMS Extexsions Changelog
 
+* 1.0.1
+--------------------------------------------------------------------------------
+Sat Jul 17 2004
+  by JoungKyun Kim <http://www.oops.org>
+    - fixed typo to Charset from Cahrset on rtsp.c
+
 * 1.0.0
 --------------------------------------------------------------------------------
 Mon Jun 14 2004
