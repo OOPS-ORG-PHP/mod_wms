@@ -1,3 +1,6 @@
+/*
+ * $Id: bswap.h,v 1.4 2004-06-15 09:21:11 oops Exp $
+ */
 #ifndef __BSWAP_H__
 #define __BSWAP_H__
 
@@ -75,39 +78,6 @@ inline static unsigned long long int ByteSwap64(unsigned long long int x)
 #define le2me_16(x) (x)
 #define le2me_32(x) (x)
 #define le2me_64(x) (x)
-#endif
-
-// return code
-#define NOMAL 0
-#define HOST_NOT_FOUND 1
-#define SOCKET_CREATE_FAIL 2
-#define CONNECT_FAIL 3
-#define MALLOC_ERROR 4
-#define ICONV_ERROR 5
-#define NONBLOCK_ERROR 6
-#define BIND_ERROR 7
-#define WRITE_ERROR 8
-
-#define INVALID_URL 100
-#define CLOSE_PORT 101
-
-#define C_ETIMEDOUT 102
-#define C_ECONNREFUSED 103
-#define C_ECONNABORTED 104
-#define C_ECONNRESET 105
-#define C_ENETRESET 106
-
-#define FILE_NOT_FOUND 401
-#define CORRUPTED_MEDIA 402
-#define FILE_WRONG 403
-#define NOT_MEDIA 404
-#define OTHER_ERROR 405
-
-#ifndef TRUE
-#  define TRUE 0
-#endif
-#ifndef FALSE
-#  define FALSE 1
 #endif
 
 #endif

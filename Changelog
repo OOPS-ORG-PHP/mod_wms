@@ -1,4 +1,12 @@
-PHP MMS Extexsions Changelog
+PHP WMS Extexsions Changelog
+
+* 1.0.0
+--------------------------------------------------------------------------------
+Mon Jun 14 2004
+  by JoungKyun Kim <http://www.oops.org>
+    - changed program name to mod_wms
+    - added rtsp check function
+    - enable euc-kr file name on rtsp
 
 * 0.0.5
 --------------------------------------------------------------------------------

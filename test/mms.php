@@ -43,7 +43,7 @@ for ($j=0; $j<count($addr); $j++) {
     $ret = mmschecks ("{$addr[$j]}", $uri[$i], $opt, $timeout, $debug);
 
     echo "mms://{$addr[$j]}{$uri[$i]}$opt ... ";
-    echo mmscheck ($ret, $addr[$j]);
+    echo wmsmsg ($ret, $addr[$j]);
 
     if ( $sleep ) sleep($sleep);
   }
@@ -64,7 +64,49 @@ for ($j=0; $j<count($addr); $j++) {
 
     $ret = mmscheck ($url, $timeout, $debug) ."<br>\n";
 
-    echo "$url ... " . mmscheck ($ret, $addr[$j]);
+    echo "$url ... " . wmsmsg ($ret, $addr[$j]);
+
+    if ( $sleep ) sleep($sleep);
+  }
+}
+echo "\n";
+
+echo "RTSPCHECKS FUNCTION TEST\n\n";
+for ($j=0; $j<count($addr); $j++) {
+  for ($i=0; $i<count($uri);$i++) {
+    # browser 의 buffer 출력을 막기 위하여 system 함수를 넣어줌
+    system ("echo");
+
+    if ( ! $uri[$i] ) $uri[$i] = "/";
+    if ( ! preg_match ("!^/!", $uri[$i]) ) $uri[$i] = "/" . $uri[$i];
+
+    $ret = rtspchecks ("{$addr[$j]}", $uri[$i], $opt, $timeout, $debug);
+
+    echo "rtsp://{$addr[$j]}{$uri[$i]}$opt ... ";
+    echo wmsmsg ($ret, $addr[$j]);
+    echo " RC=>" . getrsptcode();
+
+    if ( $sleep ) sleep($sleep);
+  }
+}
+echo "\n";
+
+echo "\n\n";
+echo "** RTSPCHECK FUNCTION TEST\n\n";
+for ($j=0; $j<count($addr); $j++) {
+  for ($i=0; $i<count($uri);$i++) {
+    # browser 의 buffer 출력을 막기 위하여 system 함수를 넣어줌
+    system ("echo");
+
+    if ( ! $uri[$i] ) $uri[$i] = "/";
+    if ( ! preg_match ("!^/!", $uri[$i]) ) $uri[$i] = "/" . $uri[$i];
+
+    $url = "rtsp://{$addr[$j]}{$uri[$i]}{$opt}";
+
+    $ret = rtspcheck ($url, $timeout, $debug) ."<br>\n";
+
+    echo "$url ... " . wmsmsg ($ret, $addr[$j]);
+    echo " RC=>" . getrsptcode();
 
     if ( $sleep ) sleep($sleep);
   }
