@@ -32,7 +32,7 @@ define (OTHER_ERROR, 405);
 $addr[] = "192.168.0.1";
 $addr[] = "192.168.0.2";
 $addr[] = "192.168.0.3";
-$debug = 1;
+$debug = 0;
 $timeout = 2;
 $sleep = 0;
 $opt = "";
