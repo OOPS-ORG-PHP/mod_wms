@@ -1,5 +1,12 @@
 PHP MMS Extexsions Changelog
 
+* 0.0.4
+Mon May 22 2004
+  by JoungKyun Kim <http://www.oops.org>
+    - added return code
+    - changed case of connect failed
+    - added local bind code
+
 * 0.0.3
 --------------------------------------------------------------------------------
 Tue May 18 2004

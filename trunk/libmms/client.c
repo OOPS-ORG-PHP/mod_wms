@@ -120,7 +120,10 @@ static int send_command (int s, int command, uint32_t switches,
   memcpy (&cmd.buf[48], data, length);
 
   if (write (s, cmd.buf, length+48) != (length+48)) {
-    php_error (E_WARNING, "write error\n");
+    if ( verbose )
+      php_printf ("write error. maybe closed prot 1755.\n");
+
+    return -1;
   }
 
   if (verbose) {
@@ -162,6 +165,7 @@ static int send_command (int s, int command, uint32_t switches,
     php_printf ("\n");
   }
 
+  return 0;
 }
 
 static void string_utf16(char *dest, char *src, int len) {
@@ -284,8 +288,11 @@ static int get_answer (int s) {
 
     command = get_32 (data, 36) & 0xFFFF;
 
-    if (command == 0x1b) 
-      send_command (s, 0x1b, 0, 0, 0, data);
+    if (command == 0x1b) {
+      if ( send_command (s, 0x1b, 0, 0, 0, data) == -1 ) {
+        return CLOSE_PORT;
+      }
+    }
   }
 
   return NOMAL;
@@ -374,6 +381,7 @@ int o_mmscheck (char *url, int timeout, int verbose) {
 
   int                  s ;
   struct sockaddr_in   sa;
+  struct sockaddr_in   la;
   struct hostent      *hp;
   char                 str[1024];
   char                 data[1024];
@@ -382,7 +390,7 @@ int o_mmscheck (char *url, int timeout, int verbose) {
   char                *path, *file, *cp;
   int                  opt, optlength = 0, result = 0;
   struct timeval       timeouts;
-  fd_set               c_fds, r_fds;
+  fd_set               c_fds;
 
   /* parse url */
   strncpy (host, &url[6], 255);
@@ -433,6 +441,17 @@ int o_mmscheck (char *url, int timeout, int verbose) {
 
   if (verbose) php_printf ("socket open\n");
 
+  /* local socket */
+  la.sin_family = hp->h_addrtype;
+  la.sin_addr.s_addr = htonl (INADDR_ANY);
+  la.sin_port = htons (0);
+
+  /* local bind */
+  if ( bind (s, (struct sockaddr *) &la, sizeof (la)) < 0 ) {
+    close (s);
+    return BIND_ERROR;
+  }
+
   /* make it nonblocking funtion connection */
   if ( nonblock_func (s, TRUE) == -1 ) {
     close (s);
@@ -444,15 +463,13 @@ int o_mmscheck (char *url, int timeout, int verbose) {
   if ( connect (s, (struct sockaddr *)&sa, sizeof sa) < 0 && errno == EINPROGRESS) {
     /* connected nonblockingly. wait until timeout */
     FD_ZERO (&c_fds);
-    FD_ZERO (&r_fds);
     FD_SET (s, &c_fds);
-    FD_SET (s, &r_fds);
 
     timeouts.tv_sec = timeout;
     timeouts.tv_usec = 0;
 
     /* wait untim something happens */
-    if ( (result = select ( s + 1, &r_fds, &c_fds, NULL, &timeouts )) != 1 ) {
+    if ( (result = select ( s + 1, NULL, &c_fds, NULL, &timeouts )) < 1 ) {
       /* failed connect () */
       if ( verbose ) php_printf ("connect failed code %d\n", result);
       close (s);
@@ -473,7 +490,10 @@ int o_mmscheck (char *url, int timeout, int verbose) {
   sprintf (str, "\034\003NSPlayer/7.0.0.1956; {33715801-BAB3-9D85-24E9-03B90328270A}; Host: %s", host);
   string_utf16 (data, str, strlen(str)+2);
 
-  send_command (s, 1, 0, 0x0004000b, strlen(str) * 2+8, data);
+  if ( send_command (s, 1, 0, 0x0004000b, strlen(str) * 2+8, data) == -1 ) {
+    close (s);
+    return CLOSE_PORT;
+  }
 
   len = read (s, data, BUF_SIZE) ;
   if (len) {
@@ -488,7 +508,10 @@ int o_mmscheck (char *url, int timeout, int verbose) {
   string_utf16 (&data[8], "\002\000\\\\192.168.0.129\\TCP\\1037\0000", 
 		28);
   memset (data, 0, 8);
-  send_command (s, 2, 0, 0, 28*2+8, data);
+  if ( send_command (s, 2, 0, 0, 28*2+8, data) == -1 ) {
+    close (s);
+    return CLOSE_PORT;
+  }
 
   len = read (s, data, BUF_SIZE) ;
   if (len) {
@@ -506,7 +529,10 @@ int o_mmscheck (char *url, int timeout, int verbose) {
   }
 
   memset (data, 0, 8);
-  send_command (s, 5, 0, 0, strlen(path)*2+12, data);
+  if ( send_command (s, 5, 0, 0, strlen(path)*2+12, data) == -1 ) {
+    close (s);
+    return CLOSE_PORT;
+  }
 
   result = get_answer (s);
 

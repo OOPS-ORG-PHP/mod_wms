@@ -85,8 +85,10 @@ inline static unsigned long long int ByteSwap64(unsigned long long int x)
 #define MALLOC_ERROR 4
 #define ICONV_ERROR 5
 #define NONBLOCK_ERROR 6
+#define BIND_ERROR 7
 
 #define INVALID_URL 100
+#define CLOSE_PORT 101
 
 #define FILE_NOT_FOUND 401
 #define CORRUPTED_MEDIA 402
@@ -94,7 +96,11 @@ inline static unsigned long long int ByteSwap64(unsigned long long int x)
 #define NOT_MEDIA 404
 #define OTHER_ERROR 405
 
-#define TRUE 0
-#define FALSE 1
+#ifndef TRUE
+#  define TRUE 0
+#endif
+#ifndef FALSE
+#  define FALSE 1
+#endif
 
 #endif
