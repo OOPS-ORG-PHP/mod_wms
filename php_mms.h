@@ -15,7 +15,7 @@
   | Author:                                                              |
   +----------------------------------------------------------------------+
 
-  $Id: php_mms.h,v 1.1.1.1 2004-05-19 18:49:08 oops Exp $
+  $Id: php_mms.h,v 1.2 2004-05-24 14:05:32 oops Exp $
 */
 
 #ifndef PHP_MMS_H
@@ -70,8 +70,8 @@ ZEND_END_MODULE_GLOBALS(mms)
 #define MMS_G(v) (mms_globals.v)
 #endif
 
-#define MMS_BUILDNO "200405181959"
-#define MMS_BUILDVER "0.0.3"
+#define MMS_BUILDNO "200405222307"
+#define MMS_BUILDVER "0.0.4"
 
 #define phpext_mms_ptr mms_module_ptr
 
