@@ -1,7 +1,7 @@
-mod_mms INSTALLATION
+mod_wms INSTALLATION
 
 
-mod_mms 디렉토리에서 다음의 명령을 수행하여 설치한다.
+mod_wms 디렉토리에서 다음의 명령을 수행하여 설치한다.
 
 phpize
 ./configure
@@ -10,6 +10,6 @@ make install
 
 설치 후에, php.ini 에
 
-extensions=mms.so
+extensions=wms.so
 
 를 등록한 후, apache 를 재시작 해 준다.
