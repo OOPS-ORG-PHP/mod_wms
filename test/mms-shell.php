@@ -32,13 +32,10 @@ $uri[] = "WMLoad4.asf";
 echo "MMSCHECKS FUNCTION TEST\n\n";
 for ($j=0; $j<count($addr); $j++) {
   for ($i=0; $i<count($uri);$i++) {
-    # browser 의 buffer 출력을 막기 위하여 system 함수를 넣어줌
-    system ("echo");
-
     if ( ! $uri[$i] ) $uri[$i] = "/";
     if ( ! preg_match ("!^/!", $uri[$i]) ) $uri[$i] = "/" . $uri[$i];
 
-    $ret = mmschecks ("{$addr[$j]}", $uri[$i], $opt, $timeout, $debug) ."<br>\n";
+    $ret = mmschecks ("{$addr[$j]}", $uri[$i], $opt, $timeout, $debug);
 
     echo "mms://{$addr[$j]}{$uri[$i]}$opt ... ";
 
@@ -58,6 +55,21 @@ for ($j=0; $j<count($addr); $j++) {
       case MALLOC_ERROR :
         echo "memory allocation error";
         break;
+      case ICONV_ERROR:
+        echo "failed iconv convert";
+        break;
+      case NONBLOCK_ERROR:
+        echo "failed transport non blocking mode";
+        break;
+      case BIND_ERROR:
+        echo "failed to bind local port";
+        break;
+      case INVALID_URL:
+        echo "{$addr[$j]} is invalid address";
+        break;
+      case CLOSE_PORT:
+        echo "Maybe closed 1755 port on {$addr[$j]}";
+        break;
       case FILE_NOT_FOUND :
         echo "file not found";
         break;
@@ -79,20 +91,18 @@ for ($j=0; $j<count($addr); $j++) {
     sleep(1);
   }
 }
+echo "\n";
 
 echo "\n\n";
 echo "** MMSCHECK FUNCTION TEST\n\n";
 for ($j=0; $j<count($addr); $j++) {
   for ($i=0; $i<count($uri);$i++) {
-    # browser 의 buffer 출력을 막기 위하여 system 함수를 넣어줌
-    system ("echo");
-
     if ( ! $uri[$i] ) $uri[$i] = "/";
     if ( ! preg_match ("!^/!", $uri[$i]) ) $uri[$i] = "/" . $uri[$i];
 
     $url = "mms://{$addr[$j]}{$uri[$i]}{$opt}";
 
-    $ret = mmschecks ($url, $timeout, $debug) ."<br>\n";
+    $ret = mmschecks ($url, $timeout, $debug);
 
     echo "$url ... ";
 
@@ -101,7 +111,7 @@ for ($j=0; $j<count($addr); $j++) {
         echo "OK";
         break;
       case HOST_NOT_FOUND :
-        echo "{$addr[$j]} not found";
+        echo "{$url} not found";
         break;
       case SOCKET_CREATE_FAIL :
         echo "socket create failed";
@@ -112,6 +122,21 @@ for ($j=0; $j<count($addr); $j++) {
       case MALLOC_ERROR :
         echo "memory allocation error";
         break;
+      case ICONV_ERROR:
+        echo "failed iconv convert";
+        break;
+      case NONBLOCK_ERROR:
+        echo "failed transport non blocking mode";
+        break;
+      case BIND_ERROR:
+        echo "failed to bind local port";
+        break;
+      case INVALID_URL:
+        echo "{$url} is invalid address";
+        break;
+      case CLOSE_PORT:
+        echo "Maybe closed 1755 port on {$addr[$j]}";
+        break;
       case FILE_NOT_FOUND :
         echo "file not found";
         break;
@@ -133,5 +158,6 @@ for ($j=0; $j<count($addr); $j++) {
     sleep(1);
   }
 }
+echo "\n";
 
 ?>
