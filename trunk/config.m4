@@ -1,4 +1,4 @@
-dnl $Id: config.m4,v 1.2 2004-06-15 09:21:11 oops Exp $
+dnl $Id: config.m4,v 1.3 2008-07-15 11:46:03 oops Exp $
 dnl config.m4 for extension wms
 
 dnl Comments in this file start with the string 'dnl'.
@@ -37,8 +37,8 @@ if test "$PHP_WMS" != "no"; then
     if test -f $i/libiconv.so -o -f $i/libiconv.a ; then
       WMS_LIB=$i
       break
-    elif test -f $i/lib/libiconv.a -o -f $i/lib/libiconv.a ; then
-      WMS_LIB=$i/lib
+    elif test -f $i/$PHP_LIBDIR/libiconv.a -o -f $i/$PHP_LIBDIR/libiconv.a ; then
+      WMS_LIB=$i/$PHP_LIBDIR
       break
     fi
   done
