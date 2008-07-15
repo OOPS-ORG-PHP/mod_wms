@@ -2,9 +2,14 @@ PHP WMS Extexsions Changelog
 
 * 1.0.1
 --------------------------------------------------------------------------------
+Tue Jul 15 2008
+  by JoungKyun Kim <http://www.oops.org>
+  	- support 64bit library check
+
 Sat Jul 17 2004
   by JoungKyun Kim <http://www.oops.org>
     - fixed typo to Charset from Cahrset on rtsp.c
+
 
 * 1.0.0
 --------------------------------------------------------------------------------
@@ -14,11 +19,13 @@ Mon Jun 14 2004
     - added rtsp check function
     - enable euc-kr file name on rtsp
 
+
 * 0.0.5
 --------------------------------------------------------------------------------
 Fri May 28 2004
   by JoungKyun Kim <http://www.oops.org>
     - added mmserror function
+
 
 * 0.0.4
 --------------------------------------------------------------------------------
@@ -31,6 +38,7 @@ Mon May 22 2004
     - added return code
     - changed case of connect failed
     - added local bind code
+
 
 * 0.0.3
 --------------------------------------------------------------------------------
