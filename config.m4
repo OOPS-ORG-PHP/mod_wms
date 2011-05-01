@@ -1,4 +1,4 @@
-dnl $Id: config.m4,v 1.3 2008-07-15 11:46:03 oops Exp $
+dnl $Id$
 dnl config.m4 for extension wms
 
 dnl Comments in this file start with the string 'dnl'.

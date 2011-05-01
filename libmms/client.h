@@ -1,6 +1,6 @@
 /*
  * this file include return code of this program
- * $Id: client.h,v 1.1 2004-06-15 09:21:11 oops Exp $
+ * $Id$
  */
 
 #ifndef CLIENT_H

@@ -4,7 +4,7 @@
  * mms://195.124.124.82/56/081001_angriffe_1200.wmv
  * mms://193.159.244.12/n24_wmt_mid
  *
- * $Id: mms.c,v 1.1 2004-06-15 09:21:11 oops Exp $
+ * $Id$
  */
 
 #include <unistd.h>
