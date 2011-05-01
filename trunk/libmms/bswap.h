@@ -1,5 +1,5 @@
 /*
- * $Id: bswap.h,v 1.4 2004-06-15 09:21:11 oops Exp $
+ * $Id$
  */
 #ifndef __BSWAP_H__
 #define __BSWAP_H__

@@ -1,5 +1,5 @@
 /*
- * $Id: lib.c,v 1.1 2004-06-15 09:21:11 oops Exp $
+ * $Id$
  */
 
 #include <unistd.h>

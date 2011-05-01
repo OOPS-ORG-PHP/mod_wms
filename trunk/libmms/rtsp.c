@@ -1,6 +1,6 @@
 /* 
  * RTSP header check
- * $Id: rtsp.c,v 1.3 2004-07-16 20:32:47 oops Exp $
+ * $Id$
  */
 #include <stdio.h>
 #include <unistd.h>
