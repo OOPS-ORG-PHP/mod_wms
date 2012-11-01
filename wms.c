@@ -44,7 +44,7 @@ static int le_wms;
  *
  * Every user visible function must have an entry in wms_functions[].
  */
-function_entry wms_functions[] = {
+const zend_function_entry wms_functions[] = {
 	PHP_FE(mmscheck,			NULL)
 	PHP_FE(mmschecks,			NULL)
 	PHP_FE(rtspcheck,			NULL)

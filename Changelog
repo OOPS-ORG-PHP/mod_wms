@@ -2,52 +2,56 @@ PHP WMS Extexsions Changelog
 
 * 1.0.1
 --------------------------------------------------------------------------------
+Fri Nov  2 2012
+by JoungKyun Kim <http://www.oops.org>
+	- support PHP 5.4
+
 Tue Jul 15 2008
-  by JoungKyun Kim <http://www.oops.org>
-  	- support 64bit library check
+by JoungKyun Kim <http://www.oops.org>
+	- support 64bit library check
 
 Sat Jul 17 2004
-  by JoungKyun Kim <http://www.oops.org>
-    - fixed typo to Charset from Cahrset on rtsp.c
+by JoungKyun Kim <http://www.oops.org>
+	- fixed typo to Charset from Cahrset on rtsp.c
 
 
 * 1.0.0
 --------------------------------------------------------------------------------
 Mon Jun 14 2004
-  by JoungKyun Kim <http://www.oops.org>
-    - changed program name to mod_wms
-    - added rtsp check function
-    - enable euc-kr file name on rtsp
+by JoungKyun Kim <http://www.oops.org>
+	- changed program name to mod_wms
+	- added rtsp check function
+	- enable euc-kr file name on rtsp
 
 
 * 0.0.5
 --------------------------------------------------------------------------------
 Fri May 28 2004
-  by JoungKyun Kim <http://www.oops.org>
-    - added mmserror function
+by JoungKyun Kim <http://www.oops.org>
+	- added mmserror function
 
 
 * 0.0.4
 --------------------------------------------------------------------------------
 Tue May 23 2004
-  by JoungKyun Kim <http://www.oops.org>
-    - rewirte case of connect failed
+by JoungKyun Kim <http://www.oops.org>
+	- rewirte case of connect failed
 
 Mon May 22 2004
-  by JoungKyun Kim <http://www.oops.org>
-    - added return code
-    - changed case of connect failed
-    - added local bind code
+by JoungKyun Kim <http://www.oops.org>
+	- added return code
+	- changed case of connect failed
+	- added local bind code
 
 
 * 0.0.3
 --------------------------------------------------------------------------------
 Tue May 18 2004
-  by JoungKyun Kim <http://www.oops.org>
-    - create mms extension base on mms_client 0.0.3
+by JoungKyun Kim <http://www.oops.org>
+	- create mms extension base on mms_client 0.0.3
 
 Wed May 19 2004
-  by JoungKyun Kim <http://www.oops.org>
-    - added timeout patch
-    - enable to use libiconv
+by JoungKyun Kim <http://www.oops.org>
+	- added timeout patch
+	- enable to use libiconv
 
