@@ -100,6 +100,9 @@ int o_rtspcheck (char *request, int timeout, int verbose);
 int o_getrtspcode (void);
 int o_wmsmsg (int code, char *host);
 
+#define wms_parameters(...) \
+	zend_parse_parameters (ZEND_NUM_ARGS () TSRMLS_CC, __VA_ARGS__)
+
 #endif	/* PHP_WMS_H */
 
 /*

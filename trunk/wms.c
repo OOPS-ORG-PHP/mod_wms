@@ -108,19 +108,13 @@ PHP_MINFO_FUNCTION(wms)
 }
 /* }}} */
 
-/* {{{ proto int [mms/rtsp]checks (string addr [, string uri [, string opt [, int timeout [, int debug] ] ] ])
+/* {{{ proto int [mms/rtsp]checks (string addr[, string uri[, string opt[, int timeout[, int is_type]]]])
  *  get mms or rtps header and check with seperate url on addr and uri and option ext */
 static void streaming_checks (INTERNAL_FUNCTION_PARAMETERS, zend_bool is_type)
 {
-	zval	** G_addr,
-			** G_uri,
-		   	** G_opt,
-			** G_timeout,
-			** G_debug;
 	char	 * host, *uri, *opt;
 	char	 * request = NULL;
-	int		   argc = ZEND_NUM_ARGS();
-	int		   hostlen, urilen, optlen;
+	int		   hostlen = 0, urilen = 0, optlen = 0;
 	int		   result;
 	int		   timeout = 10, debug = 0;
 	char	 * usep;
@@ -131,79 +125,23 @@ static void streaming_checks (INTERNAL_FUNCTION_PARAMETERS, zend_bool is_type)
 	opt  = NULL;
 	hostlen = 0;
 
-	switch (argc) {
-		case 5 :
-			if (zend_get_parameters_ex (argc, &G_addr, &G_uri, &G_opt, &G_timeout, &G_debug) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			convert_to_string_ex(G_uri);
-			convert_to_string_ex(G_opt);
-			convert_to_long_ex(G_timeout);
-			convert_to_long_ex(G_debug);
-
-			uri = Z_STRVAL_PP (G_uri);
-			opt = Z_STRVAL_PP (G_opt);
-			timeout = Z_LVAL_PP (G_timeout);
-			debug = Z_LVAL_PP (G_debug);
-			break;
-		case 4 :
-			if (zend_get_parameters_ex (argc, &G_addr, &G_uri, &G_opt, &G_timeout) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			convert_to_string_ex(G_uri);
-			convert_to_string_ex(G_opt);
-			convert_to_long_ex(G_timeout);
-
-			uri = Z_STRVAL_PP (G_uri);
-			opt = Z_STRVAL_PP (G_opt);
-			debug = Z_LVAL_PP (G_timeout);
-			break;
-		case 3 :
-			if (zend_get_parameters_ex (argc, &G_addr, &G_uri, &G_opt) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			convert_to_string_ex(G_uri);
-			convert_to_string_ex(G_opt);
-
-			uri = Z_STRVAL_PP (G_uri);
-			opt = Z_STRVAL_PP (G_opt);
-			break;
-		case 2 :
-			if (zend_get_parameters_ex (argc, &G_addr, &G_uri) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			convert_to_string_ex(G_uri);
-			uri = Z_STRVAL_PP (G_uri);
-			break;
-		case 1 :
-			if (zend_get_parameters_ex (argc, &G_addr) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			break;
-		default:
-			WRONG_PARAM_COUNT;
+	if ( wms_parameters
+			("s|sslb", &host, &hostlen, &uri, &urilen, &opt, &optlen, &timeout, &is_type) == FAILURE )
+	{
+		return;
 	}
 
-	convert_to_string_ex(G_addr);
-	host = Z_STRVAL_PP (G_addr);
-	hostlen = Z_STRLEN_PP (G_addr);
-
-	if ( hostlen < 4 ) {
+	if ( hostlen < 4 )
 		RETURN_LONG (WMS_HOSTS_NOT_FOUND);
-	}
 
-	if ( ! strncmp ("://", host+4, 3) || ! strncmp ("://", host+5, 3) ||
-	     ! strncmp ("://", host+5, 3) || ! strncmp ("://", host+6, 3) ) {
+	if ( ! strncmp ("://", host + 4, 3) || ! strncmp ("://", host + 5, 3) ||
+	     ! strncmp ("://", host + 5, 3) || ! strncmp ("://", host + 6, 3) )
 		RETURN_LONG (WMS_INVALID_URL);
-	}
-
-	urilen = (uri != NULL) ? Z_STRLEN_PP (G_uri) : 0;
-	optlen = (opt != NULL) ? Z_STRLEN_PP (G_opt) : 0;
 
 	usep = ( urilen == 0 || uri[0] != '/' ) ? "/" : "";
 	osep = ( optlen != 0 && opt[0] != '?' ) ? "?" : "";
 
-	request = emalloc ( sizeof (char) * (hostlen + urilen + optlen + 16) );
+	request = emalloc (sizeof (char) * (hostlen + urilen + optlen + 16));
 	if ( request == NULL ) {
 		RETURN_LONG (WMS_MALLOC_ERROR);
 	}
@@ -219,7 +157,8 @@ static void streaming_checks (INTERNAL_FUNCTION_PARAMETERS, zend_bool is_type)
 			result = o_mmscheck (request, timeout, debug);
 
 		efree (request);
-	} else result = WMS_MALLOC_ERROR;
+	} else
+		result = WMS_MALLOC_ERROR;
 
 	RETURN_LONG (result);
 }
@@ -235,52 +174,20 @@ PHP_FUNCTION(rtspchecks)
 }
 /* }}} */
 
-/* {{{ proto int [mms/rtsp]check (string url [, int timeout [, int debug] ] ] ])
+/* {{{ proto int [mms/rtsp]check (string url[, int timeout[, int method]])
  *  get mms or rtps header and check with completed url */
 static void streaming_check (INTERNAL_FUNCTION_PARAMETERS, zend_bool is_type)
 {
-	zval	** G_addr,
-			** G_timeout,
-		   	** G_debug;
 	char	 * host;
-	int		   argc = ZEND_NUM_ARGS();
-	int		   hostlen;
+	int		   hostlen = 0;
 	int		   result;
 	int		   timeout = 10, debug = 0;
 
 	host = NULL;
 	hostlen = 0;
 
-	switch (argc) {
-		case 3 :
-			if (zend_get_parameters_ex (argc, &G_addr, &G_timeout, &G_debug) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			convert_to_long_ex(G_timeout);
-			convert_to_long_ex(G_debug);
-
-			timeout = Z_LVAL_PP (G_timeout);
-			debug = Z_LVAL_PP (G_debug);
-			break;
-		case 2 :
-			if (zend_get_parameters_ex (argc, &G_addr, &G_timeout) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			convert_to_long_ex(G_timeout);
-			debug = Z_LVAL_PP (G_timeout);
-			break;
-		case 1 :
-			if (zend_get_parameters_ex (argc, &G_addr) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			break;
-		default:
-			WRONG_PARAM_COUNT;
-	}
-
-	convert_to_string_ex(G_addr);
-	host = Z_STRVAL_PP (G_addr);
-	hostlen = Z_STRLEN_PP (G_addr);
+	if ( wms_parameters ("s|lb", &host, &hostlen, &timeout, &is_type) == FAILURE )
+		return;
 
 	if ( hostlen < 4 ) {
 		RETURN_LONG (WMS_HOSTS_NOT_FOUND);
@@ -329,33 +236,15 @@ PHP_FUNCTION(wmsmsg)
 	zval ** G_code, ** G_host;
 	char *host;
 	int argc = ZEND_NUM_ARGS();
-	int hostlen;
+	int hostlen = 0;
 	int i, result;
 	int code = 0;
 
 	host = NULL;
 	hostlen = 0;
 
-	switch (argc) {
-		case 2 :
-			if (zend_get_parameters_ex (argc, &G_code, &G_host) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			convert_to_string_ex(G_host);
-			host = Z_STRVAL_PP (G_host);
-			hostlen = Z_STRLEN_PP (G_host);
-			break;
-		case 1 :
-			if (zend_get_parameters_ex (argc, &G_code) == FAILURE)
-				WRONG_PARAM_COUNT;
-
-			break;
-		default:
-			WRONG_PARAM_COUNT;
-	}
-
-	convert_to_long_ex(G_code);
-	code = Z_LVAL_PP (G_code);
+	if ( wms_parameters ("l|s", &code, &host, &hostlen) == FAILURE )
+		return;
 
 	if ( hostlen == 0 )
 		host = "host";
