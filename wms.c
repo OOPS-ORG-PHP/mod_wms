@@ -64,7 +64,7 @@ zend_module_entry wms_module_entry = {
 #endif
 	"wms",
 	wms_functions,
-	NULL,
+	PHP_MINIT(wms),
 	NULL,
 	NULL,
 	NULL,
@@ -79,6 +79,21 @@ zend_module_entry wms_module_entry = {
 #ifdef COMPILE_DL_WMS
 ZEND_GET_MODULE(wms)
 #endif
+
+/* {{{ PHP_MINIT_FUNCTION
+ */
+PHP_MINIT_FUNCTION(wms)
+{
+	REGISTER_LONG_CONSTANT ("WMS_NORMAL",          WMS_NORMAL, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("WMS_HOSTS_NOT_FOUND", WMS_HOSTS_NOT_FOUND, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("WMS_INVALID_URL",     WMS_INVALID_URL, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("WMS_CLOSE_PORT",      WMS_CLOSE_PORT, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("WMS_MALLOC_ERROR",    WMS_MALLOC_ERROR, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("WMS_ICONV_ERROR",     WMS_ICONV_ERROR, CONST_PERSISTENT | CONST_CS);
+
+	return SUCCESS;
+}
+/* }}} */
 
 /* {{{ PHP_MINFO_FUNCTION
  */
@@ -174,12 +189,12 @@ static void streaming_checks (INTERNAL_FUNCTION_PARAMETERS, zend_bool is_type)
 	hostlen = Z_STRLEN_PP (G_addr);
 
 	if ( hostlen < 4 ) {
-		RETURN_LONG (HOSTS_NOT_FOUND);
+		RETURN_LONG (WMS_HOSTS_NOT_FOUND);
 	}
 
 	if ( ! strncmp ("://", host+4, 3) || ! strncmp ("://", host+5, 3) ||
 	     ! strncmp ("://", host+5, 3) || ! strncmp ("://", host+6, 3) ) {
-		RETURN_LONG (INVALID_URL);
+		RETURN_LONG (WMS_INVALID_URL);
 	}
 
 	urilen = (uri != NULL) ? Z_STRLEN_PP (G_uri) : 0;
@@ -190,7 +205,7 @@ static void streaming_checks (INTERNAL_FUNCTION_PARAMETERS, zend_bool is_type)
 
 	request = emalloc ( sizeof (char) * (hostlen + urilen + optlen + 16) );
 	if ( request == NULL ) {
-		RETURN_LONG (MALLOC_ERROR);
+		RETURN_LONG (WMS_MALLOC_ERROR);
 	}
 
 	memset (request, 0, sizeof (char) * (hostlen + urilen + optlen + 16));
@@ -204,7 +219,7 @@ static void streaming_checks (INTERNAL_FUNCTION_PARAMETERS, zend_bool is_type)
 			result = o_mmscheck (request, timeout, debug);
 
 		efree (request);
-	} else result = MALLOC_ERROR;
+	} else result = WMS_MALLOC_ERROR;
 
 	RETURN_LONG (result);
 }
@@ -268,11 +283,11 @@ static void streaming_check (INTERNAL_FUNCTION_PARAMETERS, zend_bool is_type)
 	hostlen = Z_STRLEN_PP (G_addr);
 
 	if ( hostlen < 4 ) {
-		RETURN_LONG (HOSTS_NOT_FOUND);
+		RETURN_LONG (WMS_HOSTS_NOT_FOUND);
 	}
 
 	if ( (!is_type && strncmp ("mms://", host, 6)) || (is_type && strncmp ("rtsp://", host, 7)) ) {
-		RETURN_LONG (INVALID_URL);
+		RETURN_LONG (WMS_INVALID_URL);
 	}
 
 	if ( is_type )

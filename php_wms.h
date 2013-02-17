@@ -84,16 +84,16 @@ ZEND_END_MODULE_GLOBALS(wms)
  */
 
 // nomal return code
-#define NOMAL                                 0
+#define WMS_NORMAL          0
 
 // return code about connection
-#define HOSTS_NOT_FOUND                    2001
-#define INVALID_URL                        2100
-#define CLOSE_PORT                         2101
+#define WMS_HOSTS_NOT_FOUND 2001
+#define WMS_INVALID_URL     2100
+#define WMS_CLOSE_PORT      2101
 
 // return code about system
-#define MALLOC_ERROR                       4000
-#define ICONV_ERROR                        5000
+#define WMS_MALLOC_ERROR    4000
+#define WMS_ICONV_ERROR     5000
 
 int o_mmscheck (char *request, int timeout, int verbose);
 int o_rtspcheck (char *request, int timeout, int verbose);
