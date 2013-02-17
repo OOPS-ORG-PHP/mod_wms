@@ -204,7 +204,6 @@ static int print_answer (char *data, int len) {
 		case 0xc00d157f: // media server 9
 		case 0xc00d07e2: // mdeia server 4.1
 			return NOT_MEDIA;
-		default:
 	}
 
 	if ((s & 0xfff00000) == 0x80000000 || (s & 0xffff0000) == 0xc00d0000)
